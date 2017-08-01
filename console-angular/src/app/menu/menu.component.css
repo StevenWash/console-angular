@@ -1,0 +1,35 @@
+.meun dl {
+  padding: 0 10px;
+}
+.meun-title {
+  color: #828e9a;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.meun-item {
+  line-height: 40px;
+  padding-left: 20px;
+  height: 40px;
+  color: #aab1b7;
+  cursor: pointer;
+}
+.meun-item a {
+  color: #aab1b7;
+  display: block;
+}
+.meun-item-active a {
+  color: #c4c7cc;
+  display: block;
+}
+.meun-item img {
+  padding-right: 8px;
+  height: 20px;
+}
+.meun-item-active {
+  background-color: #3d4e60;
+  border-right: 4px solid #647f9d;
+  color: #fff;
+}

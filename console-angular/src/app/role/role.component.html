@@ -1,0 +1,372 @@
+<!--角色管理模块-->
+<div role="tabpanel" class="tab-pane" id="roles">
+  <div class="check-div form-inline">
+    <div class="col-xs-3">
+      <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addRole">Add Role</button>
+    </div>
+    <div class="col-xs-4">
+      <input type="text" class="form-control input-sm" placeholder="input..." [(ngModel)]="inputRolename">
+      <button class="btn btn-white btn-xs " (click)="getRoleList()">Search </button>
+      <button class="btn btn-white btn-xs " (click)="resetRoleInput()">Reset </button>
+    </div>
+    <div class="col-lg-3 col-lg-offset-2 col-xs-4" style=" padding-right: 40px;text-align: right;">
+      <label for="paixu">Order By:&nbsp;</label>
+      <select class=" form-control">
+        <option>Id</option>
+        <option>Name</option>
+        <option>Create By</option>
+        <option>Create On</option>
+      </select>
+    </div>
+  </div>
+  <div class="data-div">
+    <div class="row tableHeader">
+      <div class="col-xs-1">Id</div>
+      <div class="col-xs-3 ">Name</div>
+      <div class="col-xs-3">Create By</div>
+      <div class="col-xs-3">Create On</div>
+      <div class="col-xs-1"></div>
+      <div class="col-xs-1"></div>
+    </div>
+    <div *ngFor="let roleInfo of roleInfos" class="tablebody">
+      <div class="row"  role="button" (click)="clickRole(roleInfo)">
+        <div class="col-xs-1">{{roleInfo.id}}</div>
+        <div class="col-xs-3 ">{{roleInfo.name}}</div>
+        <div class="col-xs-3">{{roleInfo.createdBy}}</div>
+        <div class="col-xs-3">{{roleInfo.createdOn}}</div>
+        <div class="col-xs-2">
+          <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#updateRole" (click)="getRoleInfo(roleInfo)">Update</button>
+          <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteRole" (click)="getRoleId(roleInfo)">Delete</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <!--页码块-->
+  <footer class="footer">
+    <ul class="pagination">
+      <li>
+        <select>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select> 页
+      </li>
+      <li class="gray">共20页</li>
+      <li>
+        <i class="glyphicon glyphicon-menu-left"></i>
+      </li>
+      <li>
+        <i class="glyphicon glyphicon-menu-right"></i>
+      </li>
+    </ul>
+  </footer>
+
+  <!--弹出添加角色窗口-->
+  <div class="modal fade" id="addRole" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Add Role</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal"  *ngIf="aRole">
+              <div class="form-group ">
+                <label for="sName" class="col-xs-3 control-label">Role Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text"  name="roleName" [(ngModel)]="aRole.name" #name="ngModel"
+                         class="form-control input-sm duiqi" id="roleName" placeholder="">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green" (click)="addRole()" data-dismiss="modal">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出修改角色窗口-->
+  <div class="modal fade" id="updateRole" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Update Role</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal"  *ngIf="role">
+
+              <div class="form-group">
+                <label for="sLink" class="col-xs-3 control-label">Role Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" [(ngModel)]="role.name" name="roleName" class="form-control input-sm duiqi" id="roleName" placeholder="">
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green" data-dismiss="modal" (click)="updateRole()" >Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出删除角色警告窗口-->
+  <div class="modal fade" id="deleteRole" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            确定要删除该角色？删除后不可恢复！
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+          <button type="button" class="btn  btn-xs btn-danger" (click)="deleteRole()" data-dismiss="modal">确 定</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--在角色界面点击角色信息之后再下面显示角色的详细信-->
+  <div class="panel panel-default info">
+    <div class="panel-body">
+      <!-- 下部点击角色之后的详细信息 -->
+      <div role="tabpanel" class="tab-pane roleInfo">
+        <div id="roleInfo" >
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#roleDescription" aria-controls="roleDescription" role="tab" data-toggle="tab">Description</a></li>
+                  <li role="presentation"><a href="#rolePermissions" aria-controls="rolePermissions" role="tab" data-toggle="tab">Permissions</a></li>
+                  <li role="presentation"><a href="#roleSubject" aria-controls="roleSubject" role="tab" data-toggle="tab">Subject</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <!---->
+                  <div role="tabpanel" class="tab-pane active" id="roleDescription">
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-5 ">Name</div>
+                        <div class="col-xs-5 ">Value</div>
+                      </div>
+                      <div class="tablebody" *ngIf="cliRole">
+                        <label class="row"><h5>Entitiy </h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Scope Id</div>
+                          <div class="col-xs-5 ">{{cliRole.scopeId}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Id</div>
+                          <div class="col-xs-5 ">{{cliRole.id}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Created On</div>
+                          <div class="col-xs-5 ">{{cliRole.createdOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Created By</div>
+                          <div class="col-xs-5 ">{{cliRole.createdBy}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Modified On</div>
+                          <div class="col-xs-5 ">{{cliRole.modifiedOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Modified By</div>
+                          <div class="col-xs-5 ">{{cliRole.modifiedBy}}</div>
+                        </div>
+
+                        <label class="row"><h5>Role</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Name</div>
+                          <div class="col-xs-5 ">{{cliRole.name}}</div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="rolePermissions">
+                    <ul class="nav nav-pills" *ngIf="rolePermissions">
+                      <li role="presentation" class="active">
+                        <a href="#addRolePermission" data-toggle="modal">Add</a>
+                      </li>
+                      <li role="presentation"><a href="">Delete</a></li>
+                      <li role="presentation"><a href="">Refresh</a></li>
+                    </ul>
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-1">Domain</div>
+                        <div class="col-xs-1">Action</div>
+                        <div class="col-xs-2">Target GroupId</div>
+                        <div class="col-xs-2">Target ScopeId</div>
+                        <div class="col-xs-2">Forwardable</div>
+                        <div class="col-xs-1">AddBy</div>
+                        <div class="col-xs-3">AddOn </div>
+                      </div>
+                      <div class="tablebody">
+
+                        <div class="row" *ngFor="let rolepermission of rolePermissions">
+                          <div class="col-xs-1" *ngIf="rolepermission.permission.domain">{{rolepermission.permission}}</div>
+                          <div class="col-xs-1" *ngIf="!rolepermission.permission.domain">ALL</div>
+                          <div class="col-xs-1" *ngIf="rolepermission.permission.action">{{rolepermission.permission.action}}</div>
+                          <div class="col-xs-1" *ngIf="!rolepermission.permission.action">ALL</div>
+                          <div class="col-xs-2" *ngIf="rolepermission.permission.groupId">{{rolepermission.permission.groupId}}</div>
+                          <div class="col-xs-2" *ngIf="!rolepermission.permission.groupId">ALL</div>
+                          <div class="col-xs-2" *ngIf="rolepermission.permission.targetScopeId">{{rolepermission.permission.targetScopeId}}</div>
+                          <div class="col-xs-2" *ngIf="!rolepermission.permission.targetScopeId">ALL</div>
+                          <div class="col-xs-2" *ngIf="rolepermission.permission.forwardable">Yes</div>
+                          <div class="col-xs-2" *ngIf="!rolepermission.permission.forwardable">No</div>
+                          <div class="col-xs-1">{{rolepermission.createdBy}}</div>
+                          <div class="col-xs-3">{{rolepermission.createdOn}}</div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="roleSubject">
+                    <ul class="nav nav-pills">
+                      <li role="presentation" class="active"><a href="#">Add</a></li>
+                      <li role="presentation"><a href="#">Refresh</a></li>
+                    </ul>
+
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-1 ">Status</div>
+                        <div class="col-xs-2 ">Username</div>
+                        <div class="col-xs-2">CredentialType</div>
+                        <div class="col-xs-2">ExpirationDate </div>
+                        <div class="col-xs-2">CreateOn</div>
+                        <div class="col-xs-1">CreateBy</div>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-1"></div>
+                      </div>
+                      <div class="tablebody">
+
+                        <div class="row">
+                          <div class="col-xs-1 ">On</div>
+                          <div class="col-xs-2 ">Kapua-sys</div>
+                          <div class="col-xs-2">Kapua-sys</div>
+                          <div class="col-xs-2">18186533315</div>
+                          <div class="col-xs-2">132456@qq.com</div>
+                          <div class="col-xs-1">admin</div>
+                          <div class="col-xs-2">
+                            <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser">Update</button>
+                            <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUser">Delete</button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!--弹出添加角色权限的窗口-->
+  <div class="modal fade" id="addRolePermission" role="dialog"  aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Add new permission</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal">
+              <div class="form-group ">
+                <label for="domain" class="col-xs-4 control-label">Domain：</label>
+                <div class="col-xs-8 ">
+                  <select id="domain" class="form-control duiqi" name="domain" [(ngModel)]="domain"  (ngModelChange)="domain=$event;setDomain()">
+                    <option value="" class="active">ALL</option>
+                    <option  *ngFor="let item of domains" >{{item.name}} </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="action" class="col-xs-4 control-label">Action：</label>
+                <div class="col-xs-8 ">
+                  <select id="action" class="form-control duiqi" name="action" [(ngModel)]="action"  (ngModelChange)="action=$event;setAction()">
+                    <option value="" class="active">ALL</option>
+                    <option value="read">read</option>
+                    <option value="write">write</option>
+                    <option value="delete">delete</option>
+                    <option value="connect">connect</option>
+                    <option value="execute">execute</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="group" class="col-xs-4 control-label">Group：</label>
+                <div class="col-xs-8 ">
+                  <select id="roleGroup" class="form-control duiqi" name="group" [(ngModel)]="group"  (ngModelChange)="group=$event;setGroup()">
+                    <option value=""class="active">ALL</option>
+                    <option *ngFor="let item of groupInfos" >{{item.name}} </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="group" class="col-xs-4 control-label">Forwardable：</label>
+                <div class="col-xs-1 ">
+                  <input type="checkbox" id="forwardable" class="form-control">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green"  data-dismiss="modal">Submit</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+</div>
+

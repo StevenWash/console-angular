@@ -1,0 +1,42 @@
+#logoDiv {
+  padding-top:0px;
+  padding-bottom: 3px;
+  height: 70px;
+  background-color: #354457;
+  font-size: 17px;
+  color: #fff;
+  vertical-align: bottom;
+}
+#logo {
+  height: 80px;
+  padding-right: 5px;
+}
+#logoDiv span {
+  margin: auto;
+}
+#personInfor {
+  padding: 10px 5px 10px;
+  margin: 0 5px;
+  color: #b3bcc5;
+  border-bottom: 1px solid #354457;
+  overflow-x: hidden;
+  padding-left: 20px;
+}
+#personInfor p {
+  font-size: 12px;
+  margin-left: -5px;
+}
+#personInfor a {
+  color: #B3BCC5;
+  text-decoration: underline;
+}
+#userName {
+  font-size: 15px!important;
+  padding: 0;
+  margin: 0;
+}
+.line-div {
+  color: #F00;
+  height: 5px;
+}
+

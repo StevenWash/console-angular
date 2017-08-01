@@ -1,0 +1,15 @@
+.logoInfo{
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+}
+.logoInfo .logoImg{
+  margin:  auto 5px;
+  text-align: center;
+}
+.logoInfo .logoIntroduce{
+  margin-top: 100px;
+  text-align: center;
+  line-height: 10px;
+}

@@ -1,0 +1,166 @@
+<!-- 连接管理模块 -->
+<div role="tabpanel" class="tab-pane" id="connection">
+
+  <div class="check-div form-inline">
+    <div class="col-xs-8">
+      <label>ClientId:&nbsp;&nbsp;</label><input type="text" id="devconnClientId" class="form-control input-sm" placeholder="input..." [(ngModel)]="inputDeviceConnClientId">&nbsp;&nbsp;
+      <label>ConStatus:&nbsp;&nbsp;</label>
+      <select  class="form-control" [(ngModel)]="inputDeviceConnClientStatus"
+               id="devConnectStatus">
+        <option value="">ANY</option>
+        <option value="CONNECTED">CONNECTED</option>
+        <option value="DISCONNECTED">DISCONNECTED</option>
+        <option value="MISSING">MISSING</option>
+      </select>
+
+      <button class="btn btn-white btn-xs " (click)="getDeviceConnection()">&nbsp;Search </button>
+      <button class="btn btn-white btn-xs " (click)="resetInputDeviceConn()">Reset </button>
+    </div>
+    <div class="col-lg-3 col-lg-offset-1 col-xs-4" style=" padding-right: 40px;text-align: right;">
+      <label for="paixu">Order By:&nbsp;</label>
+      <select class=" form-control">
+        <option>Connect Status</option>
+        <option>Client Id</option>
+        <option>User Id</option>
+        <option>Protocol</option>
+        <option>Modified On</option>
+      </select>
+    </div>
+  </div>
+  <div class="data-div">
+    <div class="row tableHeader">
+      <div class="col-xs-2 ">Connect Status</div>
+      <div class="col-xs-2 ">Client Id</div>
+      <div class="col-xs-1">User Id</div>
+      <div class="col-xs-2">Protocol</div>
+      <div class="col-xs-3">Modified On</div>
+      <div class="col-xs-1"></div>
+      <div class="col-xs-1"></div>
+    </div>
+    <div *ngFor="let deviceConnection of deviceConnections" class="tablebody">
+
+      <div class="row" (click)="clickConnection(deviceConnection)">
+        <div class="col-xs-2 ">{{deviceConnection.status}}</div>
+        <div class="col-xs-2 ">{{deviceConnection.clientId}}</div>
+        <div class="col-xs-1">{{deviceConnection.userId}}</div>
+        <div class="col-xs-2">{{deviceConnection.protocol}}</div>
+        <div class="col-xs-3">{{deviceConnection.modifiedOn}}</div>
+        <div class="col-xs-2">
+          <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#refreshConnect">Refresh</button>
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <!--页码块-->
+  <div class="footer">
+    <ul class="pagination">
+      <li>
+        <select>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select> 页
+      </li>
+      <li class="gray">共20页</li>
+      <li>
+        <i class="glyphicon glyphicon-menu-left"></i>
+      </li>
+      <li>
+        <i class="glyphicon glyphicon-menu-right"></i>
+      </li>
+    </ul>
+  </div>
+
+  <!--在设备连接界面点击连接信息之后在下面显示用户的详细信息-->
+  <div class="panel panel-default info">
+    <div class="panel-body">
+      <!-- 下部点击连接信息之后的详细信息 -->
+      <div role="tabpanel" class="tab-pane info">
+        <div id="connectionInfo" >
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="description">
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-5 ">Name</div>
+                        <div class="col-xs-5 ">Value</div>
+                      </div>
+                      <div class="tablebody" *ngIf="cliConnection">
+                        <label class="row"><h5>Connection Informations</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Client Id</div>
+                          <div class="col-xs-5 ">{{cliConnection.clientId}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">User Id</div>
+                          <div class="col-xs-5 ">{{cliConnection.userId}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Client IP</div>
+                          <div class="col-xs-5 ">{{cliConnection.clientIp}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Server IP</div>
+                          <div class="col-xs-5 ">{{cliConnection.serverIP}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Protocol</div>
+                          <div class="col-xs-5 ">{{cliConnection.protocol}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Connection Status</div>
+                          <div class="col-xs-5 ">{{cliConnection.status}}</div>
+                        </div>
+                        <label class="row"><h5>Entity Informations</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Connection Id</div>
+                          <div class="col-xs-5 ">{{cliConnection.id}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Modified On</div>
+                          <div class="col-xs-5 ">{{cliConnection.modifiedOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Modified By</div>
+                          <div class="col-xs-5 ">{{cliConnection.modifiedBy}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Created On</div>
+                          <div class="col-xs-5 ">{{cliConnection.createdOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Created By</div>
+                          <div class="col-xs-5 ">{{cliConnection.createdBy}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end 设备详情-->
+</div>
+

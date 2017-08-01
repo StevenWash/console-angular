@@ -1,0 +1,195 @@
+<!--MqttClient管理模块-->
+<div role="tabpanel" class="tab-pane" id="mqttclient">
+  <div class="form-group">
+    <div id="topTab">
+      <label class="control-label">Host：</label>
+      <input id="address"  placeholder="broker ip.."  [(ngModel)]="mqttInfo.ipAddress"/>
+      <label class="control-label">Port：</label>
+      <input id="port" placeholder="broker port.." [(ngModel)]="mqttInfo.port"/>
+
+      <button id="connectbtn" type="button" class="btn btn-primary" (click)="connect()">Connect</button>
+      <button id="disconnectbtn" type="button" class="btn btn-primary" (click)="disconnect()">DisConnect</button>
+      <label id="info">{{info}}</label>
+
+
+      <div id="connopts">
+        <button id="history" type="button" class="btn btn-primary">History</button>
+        <!-- Button trigger modal -->
+        <button id="connbtn" type="button" class="btn btn-primary"
+                data-toggle="modal" data-target="#exampleModal">Connect
+          Options</button>
+        <!-- modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1"
+             role="dialog" aria-labelledby="exampleModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Connect
+                  Options</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-inline">
+                  <div class="form-group ">
+                    <label for="sessionopts" class="control-label ">Session Options:</label>
+                    <button type="button" class="btn btn-primary form-control" id="sessionopts"  (click)="changeTrace()">{{tracestart}}</button>
+                  </div>
+
+                  <div class="form-group clientId ">
+                    <label for="clientId" class="control-label ">Client ID:</label>
+                    <input type="text" class="form-control " name="clientId" [(ngModel)]="mqttInfo.clientId" id="clientId" >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="cleansession" class="control-label">Clean
+                      Session:</label>
+                    <input type="checkbox" class="form-control" id="cleansession" name="cleanSession" [(ngModel)]="mqttInfo.cleanSession">
+                  </div>
+
+                  <div class="form-group keepalive">
+                    <label for="keepalive" class="control-label">Keep
+                      Alive:</label> <input  class="form-control" id="keepalive" name="keepAlive" [(ngModel)]="mqttInfo.keepAlive"
+                  >
+                  </div>
+                  <div class="form-group">
+                    <label for="retryinterval" class="control-label">Retry
+                      Interval:</label> <input class="form-control retryInput"
+                                               id="retryinterval" name="retryInterval" [(ngModel)]="mqttInfo.retryInterval">
+                    <label>Sec</label>
+                  </div>
+                  <div class="form-group usepersis">
+                    <label for="usepersis" class="control-label">Use
+                      Persistence:</label> <input type="checkbox" class="form-control"
+                                                  id="usepersis" name="usePersistence" [(ngModel)]="mqttInfo.usePersistence">
+                  </div>
+                  <div class="form-group directory">
+                    <label for="directory" class="control-label">Directory:</label>
+                    <input class="form-control" id="directory" name="directory" [(ngModel)]="mqttInfo.directory">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-body">
+                <label class="control-label">Last
+                  Will And Testament Settings:</label>
+                <form class="form-inline">
+                  <div class="form-group topic">
+                    <label for="topic" class="control-label">Topic:</label> <input
+                    type="text" class="form-control" id="topic" name="topic" [(ngModel)]="mqttInfo.topic">
+                  </div>
+                  <div class="form-group qos">
+                    <label for="selQos" class="control-label">Qos</label> <select id="selQos" name="qos" [(ngModel)]="mqttInfo.qos">
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                  </select>
+                  </div>
+                  <div class="form-group retained">
+                    <label for="topic" class="control-label">Retained:</label> <input
+                    type="checkbox" class="form-control" id="retained" name="retained" [(ngModel)]="mqttInfo.retained">
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control msg" id="message-text"></textarea>
+                  </div>
+                </form>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancel()">Cancel</button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary" (click)="apply()">Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <!-- 显示内容 -->
+  <div class="content" id="content">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" >
+      <li role="presentation" class="active"><a href="#subscribe"
+                                                aria-controls="subscribe" role="tab" data-toggle="tab">Subscribe</a></li>
+      <li role="presentation"><a  href="#publish"
+                                  aria-controls="publish" role="tab" data-toggle="tab">Publish</a></li>
+      <li role="presentation"><a  href="#brokerstatus"
+                                  aria-controls="brokerstatus" role="tab" data-toggle="tab">BrokerStatus</a></li>
+      <li role="presentation"><a href="#log" aria-controls="log"
+                                 role="tab" data-toggle="tab">Log</a></li>
+    </ul>
+    <div class="tab-content ">
+      <!-- 对应的 Subscribe标签页-->
+      <div role="tabpanel" class="tab-pane fade in active" id="subscribe">
+        <form class="form-inline">
+          <div class="form-group content-topic">
+            <label for="topic" class="control-label"> >> Topic:</label>
+            <input type="text" class="form-control" id="topic">
+          </div>
+          <div class="form-group ">
+            <button id="subscribeBtn" type="button" class="btn btn-primary form-control">Subscribe</button>
+          </div>
+
+          <div class="form-group qos">
+            <label for="qos" class="control-label">Qos</label> <select id="selQos">
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+          </select>
+          </div>
+          <div class="form-group retained">
+            <label for="topic" class="control-label">ShowOnlyLatest:</label> <input
+            type="checkbox" class="form-control" id="retained">
+          </div>
+        </form>
+
+        <!--用来显示接收到的消息  -->
+        <div class="panel panel-primary msg-content">
+          <div class="panel-heading">
+            <h3 class="panel-title">Message Content</h3>
+          </div>
+          <div class="panel-body" id="console"></div>
+        </div>
+
+      </div>
+      <!-- 对应的 Publish标签页-->
+      <div role="tabpanel" class="tab-pane fade" id="publish">
+        <form class="form-inline">
+          <div class="form-group content-topic">
+            <label for="topic" class="control-label"> << Topic:</label> <input
+            type="text" class="form-control" id="topic">
+          </div>
+          <div class="form-group ">
+            <button id="publishBtn" type="button" class="btn btn-primary form-control">Publish</button>
+          </div>
+          <div class="form-group qos">
+            <label for="qos" class="control-label">Qos</label> <select id="selQos">
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+          </select>
+          </div>
+          <div class="form-group retained">
+            <label for="topic" class="control-label">Retained:</label> <input
+            type="checkbox" class="form-control" id="retained">
+          </div>
+          <div class="form-group pubmsg">
+            <textarea class="form-control" id="message-text" ></textarea>
+          </div>
+        </form>
+
+      </div>
+      <!-- 对应的 BrokerStatus标签页-->
+      <div role="tabpanel" class="tab-pane fade" id="brokerstatus">BrokerStatus...</div>
+      <!-- 对应的 Log标签页-->
+      <div role="tabpanel" class="tab-pane fade" id="log">Log...</div>
+    </div>
+
+  </div>
+</div>
+

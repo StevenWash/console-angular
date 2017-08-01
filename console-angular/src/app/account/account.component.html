@@ -1,0 +1,695 @@
+<!--账户管理模块-->
+<div role="tabpanel" class="tab-pane" id="account">
+  <div class="check-div form-inline">
+    <div class="col-xs-3">
+      <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addAccount">Add Account</button>
+    </div>
+    <div class="col-xs-4">
+      <input type="text" class="form-control input-sm" placeholder="input..." [(ngModel)]="inputAccountName">
+      <button class="btn btn-white btn-xs " (click)="getAccountList()">Search </button>
+      <button class="btn btn-white btn-xs ">Reset </button>
+    </div>
+    <div class="col-lg-3 col-lg-offset-2 col-xs-4" style=" padding-right: 40px;text-align: right;">
+      <label for="paixu">Order By:&nbsp;</label>
+      <select id="paixu" class="form-control">
+        <option>Status</option>
+        <option>Name</option>
+        <option>DisplayName</option>
+        <option>Phone Number</option>
+        <option>Email</option>
+        <option>CreatedBy</option>
+        <option>CreateOn</option>
+      </select>
+    </div>
+  </div>
+  <div class="data-div">
+    <div class="row tableHeader">
+      <div class="col-xs-2 ">Account Name</div>
+      <div class="col-xs-2 ">Organization Name</div>
+      <div class="col-xs-3 ">Organization Email</div>
+      <div class="col-xs-3 ">Modified On</div>
+      <div class="col-xs-1"></div>
+      <div class="col-xs-1"></div>
+    </div>
+    <div *ngFor="let accountInfo of accountInfos" class="tablebody">
+      <div class="row"  role="button" (click)="clickAccount(accountInfo)">
+        <div class="col-xs-2 ">{{accountInfo.name}}</div>
+        <div class="col-xs-2 ">{{accountInfo.organization.name}}</div>
+        <div class="col-xs-3 ">{{accountInfo.organization.email}}</div>
+        <div class="col-xs-3">{{accountInfo.modifiedOn}}</div>
+        <div class="col-xs-2">
+          <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#updateAccount" (click)="getAccountInfo(accountInfo)">Update</button>
+          <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteAccount" (click)="getAccountId(accountInfo)">Delete</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <!--页码块-->
+  <footer class="footer">
+    <ul class="pagination">
+      <li>
+        <select>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select> 页
+      </li>
+      <li class="gray">共20页</li>
+      <li>
+        <i class="glyphicon glyphicon-menu-left"></i>
+      </li>
+      <li>
+        <i class="glyphicon glyphicon-menu-right"></i>
+      </li>
+    </ul>
+  </footer>
+
+  <!--弹出添加账号的窗口-->
+  <div class="modal fade" id="addAccount" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Add Account</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal"  *ngIf="aAccount">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">*&nbsp;Account Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="accountName" [(ngModel)]="aAccount.name" #name="ngModel"
+                         class="form-control input-sm duiqi" id="accountName" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">*&nbsp;Organization Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="orgnizationName" [(ngModel)]="aAccount.organizationName" #name="ngModel"
+                         class="form-control input-sm duiqi" id="orgnizationName" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Email：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="email" [(ngModel)]="aAccount.organizationEmail" #name="ngModel"
+                         class="form-control input-sm duiqi" id="email" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Reference Person：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="personName" [(ngModel)]="aAccount.organizationPersonName" #name="ngModel"
+                         class="form-control input-sm duiqi" id="personName" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Phone Number：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="phoneNumber" [(ngModel)]="aAccount.organizationPhoneNumber" #name="ngModel"
+                         class="form-control input-sm duiqi" id="phoneNumber" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Address1：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="address1" [(ngModel)]="aAccount.organizationAddressLine1" #name="ngModel"
+                         class="form-control input-sm duiqi" id="address1" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Address2：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="address2" [(ngModel)]="aAccount.organizationAddressLine2" #name="ngModel"
+                         class="form-control input-sm duiqi" id="address2" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Zip/Post Code：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="zipPostCode" [(ngModel)]="aAccount.organizationZipPostCode" #name="ngModel"
+                         class="form-control input-sm duiqi" id="zipPostCode" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">City：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="city" [(ngModel)]="aAccount.organizationCity" #name="ngModel"
+                         class="form-control input-sm duiqi" id="city" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">State/Province：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="stateProvinceCountry" [(ngModel)]="aAccount.organizationStateProvinceCountry" #name="ngModel"
+                         class="form-control input-sm duiqi" id="stateProvinceCountry" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Country：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="country" [(ngModel)]="aAccount.organizationCountry" #name="ngModel"
+                         class="form-control input-sm duiqi" id="country" >
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green" data-dismiss="modal" (click)="addAccount()">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出修改小组的窗口-->
+  <div class="modal fade" id="updateAccount" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Update Account</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal" *ngIf="account">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">*&nbsp;Parent Account：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="accountName" [(ngModel)]="account.name" #name="ngModel"
+                         class="form-control input-sm duiqi" id="accountName" disabled="disabled">
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">*&nbsp;Account Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="accountName" [(ngModel)]="account.name" #name="ngModel"
+                         class="form-control input-sm duiqi" id="accountName" disabled="disabled">
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">*&nbsp;Organization Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="orgnizationName" [(ngModel)]="account.organization.name" #name="ngModel"
+                         class="form-control input-sm duiqi" id="orgnizationName" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Email：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="email" [(ngModel)]="account.organization.email" #name="ngModel"
+                         class="form-control input-sm duiqi" id="email" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Reference Person：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="personName" [(ngModel)]="account.organization.personName" #name="ngModel"
+                         class="form-control input-sm duiqi" id="personName" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Phone Number：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="phoneNumber" [(ngModel)]="account.organization.phoneNumber" #name="ngModel"
+                         class="form-control input-sm duiqi" id="phoneNumber" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Address1：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="address1" [(ngModel)]="account.organization.addressLine1" #name="ngModel"
+                         class="form-control input-sm duiqi" id="address1" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Address2：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="address2" [(ngModel)]="account.organization.addressLine2" #name="ngModel"
+                         class="form-control input-sm duiqi" id="address2" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Zip/Post Code：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="zipPostCode" [(ngModel)]="account.organization.zipPostCode" #name="ngModel"
+                         class="form-control input-sm duiqi" id="zipPostCode" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">City：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="city" [(ngModel)]="account.organization.city" #name="ngModel"
+                         class="form-control input-sm duiqi" id="city" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">State/Province：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="stateProvinceCountry" [(ngModel)]="account.organization.stateProvinceCountry" #name="ngModel"
+                         class="form-control input-sm duiqi" id="stateProvinceCountry" >
+                </div>
+              </div>
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Country：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="country" [(ngModel)]="account.organization.country" #name="ngModel"
+                         class="form-control input-sm duiqi" id="country" >
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green" data-dismiss="modal" (click)="updateAccount()">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出删除小组警告窗口-->
+  <div class="modal fade" id="deleteAccount" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            确定要删除该账号吗？删除后不可恢复！
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+          <button type="button" class="btn  btn-xs btn-danger" (click)="deleteAccount()" data-dismiss="modal">确 定</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--在角色界面点击角色信息之后再下面显示角色的详细信-->
+  <div class="panel panel-default info">
+    <div class="panel-body">
+      <!-- 下部点击角色之后的详细信息 -->
+      <div role="tabpanel" class="tab-pane accountInfo">
+        <div id="accountInfo" >
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#accountDescription" aria-controls="accountDescription" role="tab" data-toggle="tab">Description</a></li>
+                  <li role="presentation"><a href="#accountUsers" aria-controls="accountUsers" role="tab" data-toggle="tab">Users</a></li>
+                  <li role="presentation"><a href="#accountSettings" aria-controls="accountSettings" role="tab" data-toggle="tab">Settings</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <!---->
+                  <div role="tabpanel" class="tab-pane active" id="accountDescription">
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-5 ">Name</div>
+                        <div class="col-xs-5 ">Value</div>
+                      </div>
+                      <div class="tablebody" *ngIf="cliAccount">
+                        <label class="row"><h5>Account Info </h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Account Name</div>
+                          <div class="col-xs-5 ">{{cliAccount.name}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Account ModifiedOn</div>
+                          <div class="col-xs-5 ">{{cliAccount.modifiedOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Account ModifiedBy</div>
+                          <div class="col-xs-5 ">{{cliAccount.modifiedBy}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Account CreatedOn</div>
+                          <div class="col-xs-5 ">{{cliAccount.createdOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Account CreatedBy</div>
+                          <div class="col-xs-5 ">{{cliAccount.createdBy}}</div>
+                        </div>
+
+                        <label class="row"><h5>Deployment Info</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">deploymentBrokerURL</div>
+                          <div class="col-xs-5 ">tcp://localhost:1883</div>
+                        </div>
+
+                        <label class="row"><h5>Organization Info</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationName</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.name}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationPersonName</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.personName}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationEmail</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.email}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationPhoneNumber</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.phoneNumber}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationAddress1</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.addressLine1}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliAccount.organization.addressLine2">
+                          <div class="col-xs-5 ">organizationAddress2</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.addressLine2}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationZip</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.zipPostCode}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationCity</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.city}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationState</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.stateProvinceCounty}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">organizationCountry</div>
+                          <div class="col-xs-5 ">{{cliAccount.organization.country}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="accountUsers">
+                    <ul class="nav nav-pills" *ngIf="cliAccount">
+                      <li role="presentation" class="active">
+                        <a href="#addAccountUser" data-toggle="modal">Add</a>
+                      </li>
+                      <li role="presentation"><a href="">Refresh</a></li>
+                    </ul>
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-1 col-lg-1">Status</div>
+                        <div class="col-xs-1 col-lg-1">Name</div>
+                        <div class="col-xs-1 col-lg-1">DisplayName</div>
+                        <div class="col-xs-1 col-lg-2">Phone Number </div>
+                        <div class="col-xs-2 col-lg-2">Email</div>
+                        <div class="col-xs-1 col-lg-1">CreatedBy</div>
+                        <div class="col-xs-3 col-lg-2">CreateOn </div>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-1"></div>
+                      </div>
+                      <div *ngFor="let userInfo of accountUsers" class="tablebody text-nowrap">
+                        <div class="row">
+                          <div class="col-xs-1 col-lg-1">{{userInfo.status}}</div>
+                          <div class="col-xs-1 col-lg-1">{{userInfo.name}}</div>
+                          <div class="col-xs-1 col-lg-1 text-nowrap">{{userInfo.displayName}}</div>
+                          <div class="col-xs-1 col-lg-2">{{userInfo.phoneNumber}}</div>
+                          <div class="col-xs-2 col-lg-2 text-nowrap">{{userInfo.email}}</div>
+                          <div class="col-xs-1 col-lg-1">{{userInfo.createdBy}}</div>
+                          <div class="col-xs-3 col-lg-2 text-nowrap">{{userInfo.createdOn}}</div>
+                          <div class="col-xs-2">
+                            <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#updateAccountUser" (click)="getAccountUserInfo(userInfo)">Update</button>
+                            <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteAccountUser" (click)="getAccountUserId(userInfo)">Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="accountSettings">
+                    <ul class="nav nav-pills">
+                      <li role="presentation" class="active"><a href="#">Add</a></li>
+                      <li role="presentation"><a href="#">Refresh</a></li>
+                    </ul>
+
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-1 ">Status</div>
+                        <div class="col-xs-2 ">Username</div>
+                        <div class="col-xs-2">CredentialType</div>
+                        <div class="col-xs-2">ExpirationDate </div>
+                        <div class="col-xs-2">CreateOn</div>
+                        <div class="col-xs-1">CreateBy</div>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-1"></div>
+                      </div>
+                      <div class="tablebody">
+
+                        <div class="row">
+                          <div class="col-xs-1 ">On</div>
+                          <div class="col-xs-2 ">Kapua-sys</div>
+                          <div class="col-xs-2">Kapua-sys</div>
+                          <div class="col-xs-2">18186533315</div>
+                          <div class="col-xs-2">132456@qq.com</div>
+                          <div class="col-xs-1">admin</div>
+                          <div class="col-xs-2">
+                            <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser">Update</button>
+                            <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUser">Delete</button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!--弹出添加某账号的用户窗口-->
+  <div class="modal fade" id="addAccountUser" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Add User</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal" #userForm="ngForm" novalidate *ngIf="aAccountUser&&aAccountCredential">
+              <div class="form-group ">
+                <label for="addAccUsername" class="col-xs-4 control-label">Username：</label>
+                <div class="col-xs-8 ">
+                  <input type="text"  name="name" [(ngModel)]="aAccountUser.name" #name="ngModel"
+                         required minlength="2" maxlength="15" class="form-control input-sm duiqi " id="addAccUsername" >
+                  <span *ngIf="name.pristine" class="label label-primary ">未修改</span>
+                  <span *ngIf="name.dirty" class="label label-warning ">已修改</span>
+                  <span *ngIf="name.valid" class="label label-success ">有效</span>
+                </div>
+                <div  class="col-xs-10">
+                  <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                    <p *ngIf="name.errors?.minlength">姓名最小长度为3</p>
+                    <p *ngIf="name.errors?.required">必须输入姓名</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="password" class="col-xs-4 control-label">Password：</label>
+                <div class="col-xs-8">
+                  <input type="accPassword" name="password" [(ngModel)]="aAccountCredential.password" #password="ngModel"
+                         required  minlength="6" maxlength="16" class="form-control input-sm duiqi " id="accPassword"
+                         placeholder="" validateEqual="repassword" reverse="true">
+                  <span *ngIf="password.pristine" class="label label-primary ">未修改</span>
+                  <span *ngIf="password.dirty" class="label label-warning ">已修改</span>
+                  <span *ngIf="password.valid" class="label label-success ">有效</span>
+                </div>
+                <div  class="col-xs-10">
+                  <div [hidden]="password.valid || password.pristine" class="alert alert-danger">
+                    <p *ngIf="password.errors?.minlength">minlength is 6</p>
+                    <p *ngIf="password.errors?.maxlength">maxlength is 16</p>
+                    <p *ngIf="password.errors?.required">password required</p>
+                    <p *ngIf="userForm.controls.mobile?.errors?.validatePassword">密码格式不对</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="accRePassword" class="col-xs-4 control-label">Re-Password：</label>
+                <div class="col-xs-8 ">
+                  <input type="password" name="repassword" [(ngModel)]="aAccountCredential.repassword"
+                         class="form-control input-sm duiqi " #repassword="ngModel" required
+                         validateEqual="password" minlength="6" maxlength="16" id="accRePassword"  placeholder="">
+                  <span *ngIf="repassword.pristine" class="label label-primary ">未修改</span>
+                  <span *ngIf="repassword.dirty" class="label label-warning ">已修改</span>
+                  <span *ngIf="repassword.valid" class="label label-success ">有效</span>
+                </div>
+                <div  class="col-xs-10">
+                  <div [hidden]="repassword.valid || repassword.pristine" class="alert alert-danger">
+                    <p >两次密码不一致</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="addAccDisplayName" class="col-xs-4 control-label">Display Name：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="displayName" [(ngModel)]="aAccountUser.displayName" #displayName="ngModel" required
+                         minlength="2" maxlength="15" class="form-control input-sm duiqi " id="addAccDisplayName" placeholder="">
+                  <span *ngIf="displayName.pristine" class="label label-primary ">未修改</span>
+                  <span *ngIf="displayName.dirty" class="label label-warning ">已修改</span>
+                  <span *ngIf="displayName.valid" class="label label-success ">有效</span>
+                </div>
+                <div  class="col-xs-10">
+                  <div [hidden]="displayName.valid || displayName.pristine" class="alert alert-danger">
+                    <p *ngIf="displayName.errors?.minlength">姓名最小长度为2</p>
+                    <p *ngIf="displayName.errors?.required">必须输入姓名</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="addAccEmail" class="col-xs-4 control-label">Email：</label>
+                <div class="col-xs-8">
+                  <input type="email"  name="email" [(ngModel)]="aAccountUser.email" required
+                         #email="ngModel"
+                         class="form-control input-sm duiqi"  id="addAccEmail" placeholder="">
+                </div>
+                <div  class="col-xs-10">
+                  <div [hidden]="email.valid || email.pristine " class="alert alert-danger">
+                    Email is required and format should be <i>john@doe.com</i>.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="addAccPhone" class="col-xs-4 control-label">Phone：</label>
+                <div class="col-xs-8">
+                  <input type="text" name="mobile" [(ngModel)]="aAccountUser.phoneNumber" #mobile="ngModel"
+                         required minlength="11" maxlength="11" validateMobile class="form-control input-sm duiqi"
+                         id="addAccPhone" placeholder="">
+                  <span *ngIf="userForm.controls.mobile?.pristine" class="label label-primary">未修改</span>
+                  <span *ngIf="userForm.controls.mobile?.dirty" class="label label-warning">已修改</span>
+                  <span *ngIf="userForm.controls.mobile?.valid" class="label label-success">有效</span>
+                </div>
+                <div class="col-xs-10">
+                  <div [hidden]="userForm.controls.mobile?.valid || userForm.controls.mobile?.pristine" class="alert alert-danger">
+                    <p *ngIf="userForm.controls.mobile?.errors?.minlength">电话长度必须为11</p>
+                    <p *ngIf="userForm.controls.mobile?.errors?.required">必须输入电话</p>
+                    <p *ngIf="userForm.controls.mobile?.errors?.validateMobile">电话号码格式不正确</p>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green"  data-dismiss="modal" (click)="addAccountUser()">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出修改某账号的用户窗口-->
+  <div class="modal fade" id="updateAccountUser" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Update AccountUser</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal" *ngIf="accountUser" #userForm="ngForm" (ngSubmit)="updateUser(userForm)">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">* &nbsp;Username：</label>
+                <div class="col-xs-8">
+                  <input type="text"  [(ngModel)]="accountUser.name" name="username" class="form-control input-sm duiqi" id="accounUsername" disabled="disabled">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="displayName" class="col-xs-4 control-label">Display Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" [(ngModel)]="accountUser.displayName" name="displayName" class="form-control input-sm duiqi" id="accountDisplayName" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="email" class="col-xs-4 control-label">Email：</label>
+                <div class="col-xs-8">
+                  <input  type="text" [(ngModel)]="accountUser.email" name="email" class="form-control input-sm duiqi" id="accountEmail" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="phone" class="col-xs-4 control-label">Phone：</label>
+                <div class="col-xs-8">
+                  <input type="text" [(ngModel)]="accountUser.phoneNumber" name="phoneNumber" class="form-control input-sm duiqi" id="accountPhone" placeholder="">
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+                <button type="submit" class="btn btn-xs btn-green" (click)="updateAccountUser()" data-dismiss="modal">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出删除某账号的用户警告窗口-->
+  <div class="modal fade" id="deleteAccountUser" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            确定要删除该用户？删除后不可恢复！
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+          <button type="button" class="btn  btn-xs btn-danger" (click)="deleteAccountUser()" data-dismiss="modal">确 定</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+</div>
+

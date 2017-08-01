@@ -1,0 +1,117 @@
+@CHARSET "UTF-8";
+
+#mqttclient{
+  margin-top:30px;
+  margin-left:2%;
+  margin-right:2%;
+}
+#mqttclient #topTab{
+  margin-top:10px;
+  margin-left:2%;
+  margin-right:2%;
+}
+#mqttclient #address{
+  width: 200px;
+}
+#mqttclient #port{
+  width: 100px;
+  margin-right: 20px;
+}
+#connopts {
+  position: relative;
+  float:right;
+}
+#connopts #sessionopts{
+  width: 100px;
+}
+#connopts .clientId{
+  margin-left: 75px;
+}
+
+#connopts .keepalive{
+  margin-left: 165px;
+}
+#connopts .retryInput{
+  width: 50px;
+}
+#connopts .usepersis{
+  margin-left: 30px;
+}
+#connopts .directory{
+  margin-left: 30px;
+}
+#connopts #directory{
+  width:95px;
+}
+#connopts .qos{
+  margin-left: 50px;
+}
+#connopts .retained{
+  margin-left: 50px;
+}
+#connopts .msg{
+  margin-top:10px;
+  width: 560px;
+  height: 100px;
+}
+
+.content{
+  margin-left:2%;
+  margin-right:2%;
+}
+.content #subscribe{
+  margin-top: 10px;
+}
+.content #subscribe #topic{
+  width: 400px;
+}
+.content #subscribe .qos{
+  margin-left:23%;
+}
+.content #subscribe .retained{
+  margin-left:2%;
+}
+.content #subscribeBtn{
+  width:150px;
+}
+
+.msg-content{
+  margin-top:10px;
+}
+
+.content #publish{
+  margin-top: 10px;
+}
+.content #publish .qos{
+  margin-left:40%;
+}
+.content #publish .retained{
+  margin-left:2%;
+}
+.content #publish #topic{
+  width: 400px;
+}
+.content #publish .pubmsg {
+  width:100%;/*自动适应父布局宽度*/
+  overflow:auto;
+  margin-top: 10px;
+}
+.content #publish .pubmsg #message-text{
+  width:94%;/*自动适应父布局宽度*/
+  height:500px;
+  overflow:auto;
+  word-break:break-all;
+  margin-left: 3%;
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,222 @@
+<!--组管理模块-->
+<div role="tabpanel" class="tab-pane" id="group">
+  <div class="check-div form-inline">
+    <div class="col-xs-3">
+      <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addGroup">Add Group</button>
+    </div>
+    <div class="col-xs-4">
+      <input type="text" class="form-control input-sm" placeholder="input..."  [(ngModel)]="inputGroupname">
+      <button class="btn btn-white btn-xs " (click)="getGroupList()">Search </button>
+      <button class="btn btn-white btn-xs " (click)="resetGroupInput()">Reset </button>
+    </div>
+    <div class="col-lg-3 col-lg-offset-2 col-xs-4" style=" padding-right: 40px;text-align: right;">
+      <label for="paixu">Order By:&nbsp;</label>
+      <select id="paixu" class="form-control">
+        <option>Status</option>
+        <option>Name</option>
+        <option>DisplayName</option>
+        <option>Phone Number</option>
+        <option>Email</option>
+        <option>CreatedBy</option>
+        <option>CreateOn</option>
+      </select>
+    </div>
+  </div>
+  <div class="data-div">
+    <div class="row tableHeader">
+      <div class="col-xs-2 ">Group Name</div>
+      <div class="col-xs-2 ">Created On</div>
+      <div class="col-xs-2 ">Created By</div>
+      <div class="col-xs-2">Modified On</div>
+      <div class="col-xs-2">Modifief By</div>
+      <div class="col-xs-1"></div>
+      <div class="col-xs-1"></div>
+    </div>
+    <div *ngFor="let groupInfo of groupInfos" class="tablebody">
+      <div class="row" (click)="clickGroup(groupInfo)">
+        <div class="col-xs-2 ">{{groupInfo.name}}</div>
+        <div class="col-xs-2 ">{{groupInfo.createdOn}}</div>
+        <div class="col-xs-2 ">{{groupInfo.createdBy}}</div>
+        <div class="col-xs-2">{{groupInfo.modifiedOn}}</div>
+        <div class="col-xs-2">{{groupInfo.modifiedBy}}</div>
+        <div class="col-xs-2">
+          <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#updateGroup"  (click)="getGroupInfo(groupInfo)">Update</button>
+          <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteGroup" (click)="getGroupId(groupInfo)">Delete</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <!--页码块-->
+  <footer class="footer">
+    <ul class="pagination">
+      <li>
+        <select>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select> 页
+      </li>
+      <li class="gray">共20页</li>
+      <li>
+        <i class="glyphicon glyphicon-menu-left"></i>
+      </li>
+      <li>
+        <i class="glyphicon glyphicon-menu-right"></i>
+      </li>
+    </ul>
+  </footer>
+
+  <!--弹出添加分组的窗口-->
+  <div class="modal fade" id="addGroup" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Add Group</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal"  *ngIf="aGroup">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Group Name：</label>
+                <div class="col-xs-8 ">
+                  <input type="text" name="groupName" [(ngModel)]="aGroup.name" #name="ngModel" class="form-control input-sm duiqi" id="groupName" >
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green" data-dismiss="modal" (click)="addGroup()">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出修改小组的窗口-->
+  <div class="modal fade" id="updateGroup" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Update User</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal" *ngIf="group">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Group Name：</label>
+                <div class="col-xs-8">
+                  <input type="text" [(ngModel)]="group.name" name="groupName" class="form-control input-sm duiqi" id="groupName">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green" data-dismiss="modal" (click)="updateGroup()">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出删除小组警告窗口-->
+  <div class="modal fade" id="deleteGroup" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            确定要删除该分组吗？删除后不可恢复！
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+          <button type="button" class="btn  btn-xs btn-danger" (click)="deleteGroup()" data-dismiss="modal">确 定</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--小组详情信息-->
+  <div class="panel panel-default info">
+    <div class="panel-body">
+      <!-- 下部点击连接信息之后的详细信息 -->
+      <div role="tabpanel" class="tab-pane info">
+        <div id="groupInfo" >
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#groupDescription" aria-controls="groupDescription" role="tab" data-toggle="tab">Description</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="groupDescription">
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-5 ">Name</div>
+                        <div class="col-xs-5 ">Value</div>
+                      </div>
+                      <div class="tablebody" *ngIf="cliGroup">
+                        <label class="row"><h5>Entity </h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Modified On</div>
+                          <div class="col-xs-5 ">{{cliGroup.modifiedOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Modified By</div>
+                          <div class="col-xs-5 ">{{cliGroup.modifiedBy}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Created On</div>
+                          <div class="col-xs-5 ">{{cliGroup.createdOn}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Created By</div>
+                          <div class="col-xs-5 ">{{cliGroup.createdBy}}</div>
+                        </div>
+                        <label class="row"><h5>Group</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Group Name</div>
+                          <div class="col-xs-5 ">{{cliGroup.name}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end 小组详情-->
+</div>
+

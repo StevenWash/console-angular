@@ -1,0 +1,550 @@
+<!-- 设备管理模块 -->
+<div role="tabpanel" class="tab-pane" id="device">
+  <div class="check-div form-inline">
+    <div class="col-xs-1">
+      <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addDevice">Add Device</button>
+    </div>
+    <div class="col-xs-8">
+      <label >ClientId:&nbsp;&nbsp;</label>
+      <input type="text" class="form-control input-sm" placeholder="input..." [(ngModel)]="inputDeviceClientId">&nbsp;&nbsp;
+      <label >DevStatus:&nbsp;&nbsp;</label>
+
+      <select  class="form-control" [(ngModel)]="inputDeviceConStatus"
+               id="inputDeviceConStatus">
+        <option value="">ANY</option>
+        <option value="ENABLED">ENABLED</option>
+        <option value="DISABLED">DISABLED</option>
+      </select>
+
+      <button class="btn btn-white btn-xs" (click)="getDevices()">Search</button>
+      <button class="btn btn-white btn-xs" (click)="resetInputDevice()">Reset</button>
+    </div>
+    <div class="col-xs-3" style=" padding-right: 40px;text-align: right;">
+      <label for="paixu">OrderBy:&nbsp;</label>
+      <select class=" form-control">
+        <option>Connect Status</option>
+        <option>Client Id</option>
+        <option>User Id</option>
+        <option>Protocol</option>
+        <option>Modified On</option>
+      </select>
+    </div>
+  </div>
+  <div class="data-div">
+    <div class="row tableHeader">
+      <div class="col-xs-1 ">Status</div>
+      <div class="col-xs-1 ">ClientId</div>
+      <div class="col-xs-1">DisplayName</div>
+      <div class="col-xs-2">GroupId</div>
+      <div class="col-xs-2">CredentialModel</div>
+      <div class="col-xs-2">SerialNumber</div>
+      <div class="col-xs-1">IOT-Version</div>
+
+      <div class="col-xs-1"></div>
+      <div class="col-xs-1"></div>
+    </div>
+    <div *ngFor="let deviceInfo of deviceInfos" class="tablebody">
+
+      <div class="row" (click)="clickDevice(deviceInfo)">
+        <div class="col-xs-1 ">{{deviceInfo.status}}</div>
+        <div class="col-xs-1 ">{{deviceInfo.clientId}}</div>
+        <div class="col-xs-1">{{deviceInfo.displayName}}</div>
+        <div class="col-xs-2">{{deviceInfo.groupId}}</div>
+        <div class="col-xs-2">{{deviceInfo.deviceCredentialsMode}}</div>
+        <div class="col-xs-2">{{deviceInfo.serialNumber}}</div>
+        <div class="col-xs-1">{{deviceInfo.osgiFrameworkVersion}}</div>
+        <div class="col-xs-2">
+          <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#updateDevice" (click)="getDeviceInfo(deviceInfo)">Update</button>
+          <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteDevice" (click)="getDeviceId(deviceInfo)">Delete</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <!--页码块-->
+  <footer class="footer">
+    <ul class="pagination">
+      <li>
+        <select>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select> 页
+      </li>
+      <li class="gray">共20页</li>
+      <li>
+        <i class="glyphicon glyphicon-menu-left"></i>
+      </li>
+      <li>
+        <i class="glyphicon glyphicon-menu-right"></i>
+      </li>
+    </ul>
+  </footer>
+
+  <!--弹出添加设备窗口-->
+  <div class="modal fade" id="addDevice" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Add Device</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal" *ngIf="aDevice">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Client ID：</label>
+                <div class="col-xs-8 ">
+                  <input type="text"  name="clientId" [(ngModel)]="aDevice.clientId" #clientId="ngModel"
+                         class="form-control input-sm duiqi " id="clientId" >
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="password" class="col-xs-4 control-label">Display Name：</label>
+                <div class="col-xs-8">
+                  <input type="text" name="displayName" [(ngModel)]="aDevice.displayName" #displayName="ngModel"
+                         class="form-control input-sm duiqi " id="displayName" placeholder="" >
+                </div>
+
+              </div>
+              <div class="form-group">
+                <label for="devicegroup" class="col-xs-4 control-label">Group：</label>
+                <div class="col-xs-8 ">
+                  <select  class="form-control duiqi" name="devicegroup" #devicegroup="ngModel" [(ngModel)]="aDevice.groupId"
+                           (ngModelChange)="group=$event;setGroup()" id="devicegroup">
+                    <option value="">请选择...</option>
+                    <option  *ngFor="let item of groupInfos" value="{{item.id}}" >{{item.name}} </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri1" class="col-xs-4 control-label">Custom attribute #1：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri1" [(ngModel)]="aDevice.customAttribute1" #attri1="ngModel"
+                         class="form-control input-sm duiqi " id="attri1" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri2" class="col-xs-4 control-label">Custom attribute #2：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri2" [(ngModel)]="aDevice.customAttribute2" #attri2="ngModel"
+                         class="form-control input-sm duiqi " id="attri2" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri3" class="col-xs-4 control-label">Custom attribute #3：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri3" [(ngModel)]="aDevice.customAttribute3" #attri3="ngModel"
+                         class="form-control input-sm duiqi " id="attri3" placeholder="">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="attri4" class="col-xs-4 control-label">Custom attribute #4：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri4" [(ngModel)]="aDevice.customAttribute1" #attri4="ngModel"
+                         class="form-control input-sm duiqi " id="attri4" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri5" class="col-xs-4 control-label">Custom attribute #5：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri5" [(ngModel)]="aDevice.customAttribute5" #attri5="ngModel"
+                         class="form-control input-sm duiqi " id="attri5" placeholder="">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+          <button type="button" class="btn btn-xs btn-green"  data-dismiss="modal" (click)="addDevice()">Save</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出修改设备窗口-->
+  <div class="modal fade" id="updateDevice" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">Update Device</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="form-horizontal" *ngIf="device">
+              <div class="form-group ">
+                <label for="username" class="col-xs-4 control-label">Client ID：</label>
+                <div class="col-xs-8 ">
+                  <input type="text"  name="clientId" [(ngModel)]="device.clientId" #clientId="ngModel"
+                         class="form-control input-sm duiqi " id="clientId" disabled="disabled">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="password" class="col-xs-4 control-label">Display Name：</label>
+                <div class="col-xs-8">
+                  <input type="text" name="displayName" [(ngModel)]="device.displayName" #displayName="ngModel"
+                         class="form-control input-sm duiqi " id="displayName" placeholder="" >
+                </div>
+
+              </div>
+              <div class="form-group">
+                <label for="password" class="col-xs-4 control-label">Status：</label>
+                <div class="col-xs-8">
+                  <select  class="form-control duiqi" name="devicestatus" #devicestatus="ngModel" [(ngModel)]="device.status"
+                           id="devicegroup">
+                    <option value="ENABLE">ENABLE</option>
+                    <option value="DISABLE">DISABLE</option>
+                  </select>
+                </div>
+
+              </div>
+              <div class="form-group">
+                <label for="devicegroup" class="col-xs-4 control-label">Group：</label>
+                <div class="col-xs-8 ">
+                  <select  class="form-control duiqi" name="devicegroup" #devicegroup="ngModel" [(ngModel)]="device.groupId"
+                           (ngModelChange)="group=$event;setGroup()" id="devicegroup">
+                    <option value="">请选择...</option>
+                    <option  *ngFor="let item of groupInfos" value="{{item.id}}" >{{item.name}} </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri1" class="col-xs-4 control-label">Custom attribute #1：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri1" [(ngModel)]="device.customAttribute1" #attri1="ngModel"
+                         class="form-control input-sm duiqi " id="attri1" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri2" class="col-xs-4 control-label">Custom attribute #2：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri2" [(ngModel)]="device.customAttribute2" #attri2="ngModel"
+                         class="form-control input-sm duiqi " id="attri2" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri3" class="col-xs-4 control-label">Custom attribute #3：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri3" [(ngModel)]="device.customAttribute3" #attri3="ngModel"
+                         class="form-control input-sm duiqi " id="attri3" placeholder="">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="attri4" class="col-xs-4 control-label">Custom attribute #4：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri4" [(ngModel)]="device.customAttribute4" #attri4="ngModel"
+                         class="form-control input-sm duiqi " id="attri4" placeholder="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="attri5" class="col-xs-4 control-label">Custom attribute #5：</label>
+                <div class="col-xs-8">
+                  <input type="text"  name="attri5" [(ngModel)]="device.customAttribute5" #attri5="ngModel"
+                         class="form-control input-sm duiqi " id="attri5" placeholder="">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">Cancle</button>
+                <button type="submit" class="btn btn-xs btn-green" (click)="updateDevice()" data-dismiss="modal">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--弹出删除设备警告窗口-->
+  <div class="modal fade" id="deleteDevice" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            确定要删除该设备？删除后不可恢复！
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+          <button type="button" class="btn  btn-xs btn-danger" (click)="deleteDevice()" data-dismiss="modal">确 定</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <!--在设备连接界面点击连接信息之后在下面显示用户的详细信息-->
+  <div class="panel panel-default info">
+    <div class="panel-body">
+      <!-- 下部点击连接信息之后的详细信息 -->
+      <div role="tabpanel" class="tab-pane info">
+        <div id="deviceInfo" >
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#devDescription" aria-controls="devDescription" role="tab" data-toggle="tab">Description</a></li>
+                  <li role="presentation" ><a href="#event" aria-controls="event" role="tab" data-toggle="tab">Event</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <!-- description tab-->
+                  <div role="tabpanel" class="tab-pane active" id="devDescription">
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-5 ">Name</div>
+                        <div class="col-xs-5 ">Value</div>
+                      </div>
+                      <div class="tablebody" *ngIf="cliDevice">
+                        <label class="row" *ngIf="cliDevice.customAttribute1||
+                                                                    cliDevice.customAttribute2||
+                                                                    cliDevice.customAttribute3||
+                                                                    cliDevice.customAttribute4||
+                                                                    cliDevice.customAttribute5">
+                          <h5>Attributes Informations</h5>
+                        </label>
+                        <div class="row" *ngIf="cliDevice.customAttribute1">
+                          <div class="col-xs-5 ">Custom Attribute 1</div>
+                          <div class="col-xs-5 ">{{cliDevice.customAttribute1}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.customAttribute2">
+                          <div class="col-xs-5 ">Custom Attribute 2</div>
+                          <div class="col-xs-5 ">{{cliDevice.customAttribute2}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.customAttribute3">
+                          <div class="col-xs-5 ">Custom Attribute 3</div>
+                          <div class="col-xs-5 ">{{cliDevice.customAttribute3}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.customAttribute4">
+                          <div class="col-xs-5 ">Custom Attribute 4</div>
+                          <div class="col-xs-5 ">{{cliDevice.customAttribute4}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.customAttribute5">
+                          <div class="col-xs-5 ">Custom Attribute 5</div>
+                          <div class="col-xs-5 ">{{cliDevice.customAttribute5}}</div>
+                        </div>
+
+                        <label class="row" ><h5>Cloud Connection Informations</h5></label>
+                        <div class="row">
+                          <div class="col-xs-5 ">Status</div>
+                          <div class="col-xs-5 ">{{cliDevice.status}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.connection">
+                          <div class="col-xs-5 ">Connection Status</div>
+                          <div class="col-xs-5 ">{{cliDevice.connection.status}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Client ID</div>
+                          <div class="col-xs-5 ">{{cliDevice.clientId}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Display Name</div>
+                          <div class="col-xs-5 ">{{cliDevice.displayName}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Group ID</div>
+                          <div class="col-xs-5 ">{{cliDevice.groupId}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.lastEvent">
+                          <div class="col-xs-5 ">Last Event Type</div>
+                          <div class="col-xs-5 ">{{cliDevice.lastEvent.id}}</div>
+                        </div>
+                        <div class="row"  *ngIf="cliDevice.lastEvent">
+                          <div class="col-xs-5 ">Last Event On</div>
+                          <div class="col-xs-5 ">{{cliDevice.lastEvent.receivedOn}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.applicationIdentifiers">
+                          <div class="col-xs-5 ">Active Cloud Applications</div>
+                          <div class="col-xs-5 ">{{cliDevice.applicationIdentifiers}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.acceptEncoding">
+                          <div class="col-xs-5 ">Accepted Payload Encoding</div>
+                          <div class="col-xs-5 ">{{cliDevice.acceptEncoding}}</div>
+                        </div>
+
+
+                        <label class="row"><h5>Device Credentials Security</h5></label>
+                        <div class="row"  *ngIf="cliDevice.deviceCredentialsMode">
+                          <div class="col-xs-5 ">Credentials Tight Strategy</div>
+                          <div class="col-xs-5 ">{{cliDevice.deviceCredentialsMode}}</div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-5 ">Allow Credentials Change</div>
+                          <div class="col-xs-5 " *ngIf="cliDevice.deviceCredentialsMode">TRUE</div>
+                          <div class="col-xs-5 " *ngIf="!cliDevice.deviceCredentialsMode">FALSE</div>
+                        </div>
+
+                        <label class="row" *ngIf="cliDevice.lastEvent||cliDevice.lastEvent"><h5>GPS Informations</h5></label>
+                        <div class="row"  *ngIf="cliDevice.lastEvent">
+                          <div class="col-xs-5 ">Latitude</div>
+                          <div class="col-xs-5 ">{{cliDevice.lastEvent.position.latitude}}</div>
+                        </div>
+                        <div class="row"  *ngIf="cliDevice.lastEvent">
+                          <div class="col-xs-5 ">Longitude</div>
+                          <div class="col-xs-5 ">{{cliDevice.lastEvent.position.longitude}}</div>
+                        </div>
+
+                        <label class="row" *ngIf="cliDevice.modelName||cliDevice.modelId||cliDevice.serialNumber"><h5>Hardware Informations</h5></label>
+                        <div class="row"  *ngIf="cliDevice.modelName">
+                          <div class="col-xs-5 ">Model Name</div>
+                          <div class="col-xs-5 ">{{cliDevice.modelName}}</div>
+                        </div>
+                        <div class="row"  *ngIf="cliDevice.modelId">
+                          <div class="col-xs-5 ">Model ID</div>
+                          <div class="col-xs-5 ">{{cliDevice.modelId}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.serialNumber">
+                          <div class="col-xs-5 ">Serial Number</div>
+                          <div class="col-xs-5 ">{{cliDevice.serialNumber}}</div>
+                        </div>
+
+                        <label class="row" *ngIf="cliDevice.jvmVersion"><h5>Java Informations</h5></label>
+                        <div class="row" *ngIf="cliDevice.jvmVersion">
+                          <div class="col-xs-5 ">Java Virtual Machine Version</div>
+                          <div class="col-xs-5 ">{{cliDevice.jvmVersion}}</div>
+                        </div>
+
+                        <label class="row" *ngIf="cliDevice.imei||cliDevice.imsi||cliDevice.iccid"><h5>Modem Informations</h5></label>
+                        <div class="row" *ngIf="cliDevice.imei">
+                          <div class="col-xs-5 ">IMEI</div>
+                          <div class="col-xs-5 ">{{cliDevice.imei}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.imsi">
+                          <div class="col-xs-5 ">IMSI</div>
+                          <div class="col-xs-5 ">{{cliDevice.imsi}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.iccid">
+                          <div class="col-xs-5 ">ICCID</div>
+                          <div class="col-xs-5 ">{{cliDevice.iccid}}</div>
+                        </div>
+
+                        <label class="row"  *ngIf="cliDevice.connection||cliDevice.firmwareVersion||cliDevice.biosVersion||cliDevice.osVersion"><h5>Network Informations</h5></label>
+                        <div class="row"  *ngIf="cliDevice.connection">
+                          <div class="col-xs-5 ">IP Address</div>
+                          <div class="col-xs-5 ">{{cliDevice.connection.clientIp}}</div>
+                        </div>
+
+                        <label class="row"  *ngIf="cliDevice.firmwareVersion||cliDevice.biosVersion||cliDevice.osVersion"><h5>Software Informations</h5></label>
+                        <div class="row" *ngIf="cliDevice.firmwareVersion">
+                          <div class="col-xs-5 ">Firmware Version</div>
+                          <div class="col-xs-5 ">{{cliDevice.firmwareVersion}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.biosVersion">
+                          <div class="col-xs-5 ">BIOS Version</div>
+                          <div class="col-xs-5 ">{{cliDevice.biosVersion}}</div>
+                        </div>
+                        <div class="row" *ngIf="cliDevice.osVersion">
+                          <div class="col-xs-5 ">Operating System Version</div>
+                          <div class="col-xs-5 ">{{cliDevice.osVersion}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/end description tab-->
+
+                  <!-- event tab-->
+                  <div role="tabpanel" class="tab-pane" id="event">
+
+                    <div class="check-div form-inline">
+                      <div class="col-xs-2">
+                        <button class="btn btn-yellow btn-xs" id="refresh">Refresh</button>
+                      </div>
+                      <div class="col-xs-6 col-xs-offset-2" style=" padding-right: 40px;text-align: right;margin-right: 10px">
+                        <label for="dateRange">Date Range:&nbsp;</label>
+                        <select id="dateRange" class="form-control">
+                          <option>Last hour</option>
+                          <option>Last 12 hours</option>
+                          <option>Last 24 hours</option>
+                          <option>Last 7 days</option>
+                          <option>Last 30 days</option>
+                          <option>Custom Date  Range</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="data-div">
+                      <div class="row tableHeader">
+                        <div class="col-xs-3 ">Event Received On</div>
+                        <div class="col-xs-1 ">Event Type</div>
+                        <div class="col-xs-1">Action Type</div>
+                        <div class="col-xs-1">Response Code</div>
+                        <div class="col-xs-4">Event Message</div>
+                      </div>
+                      <div *ngFor="let eventInfo of eventInfos" class="tablebody">
+                        <div class="row" (click)="clickDevice(deviceInfo)">
+                          <div class="col-xs-3">{{eventInfo.status}}</div>
+                          <div class="col-xs-1">{{eventInfo.clientId}}</div>
+                          <div class="col-xs-1">{{eventInfo.displayName}}</div>
+                          <div class="col-xs-1">{{eventInfo.groupId}}</div>
+                          <div class="col-xs-4">{{eventInfo.deviceCredentialsMode}}</div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!--页码块-->
+                    <footer class="footer">
+                      <ul class="pagination">
+                        <li>
+                          <select>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                          </select> 页
+                        </li>
+                        <li class="gray">共20页</li>
+                        <li>
+                          <i class="glyphicon glyphicon-menu-left"></i>
+                        </li>
+                        <li>
+                          <i class="glyphicon glyphicon-menu-right"></i>
+                        </li>
+                      </ul>
+                    </footer>
+
+
+                  </div>
+                  <!--/end event tab-->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end 设备详情-->
+
+</div>
